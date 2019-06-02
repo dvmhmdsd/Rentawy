@@ -1,0 +1,201 @@
+doctype html
+html
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title= order.title
+        link(rel="manifest", href="/manifest.json")
+        link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Roboto+Condensed')
+        link(rel="stylesheet", href="/css/bootstrap.min.css")
+        link(rel="stylesheet", href="/css/font-awesome.min.css")
+        link(rel="stylesheet", href="/css/style.css")
+        //- favicon and logo
+        link(rel='apple-touch-icon', sizes='180x180', href='/images/apple-touch-icon.png')
+        link(rel='icon', type='image/png', sizes='32x32', href='/images/favicon-32x32.png')
+        link(rel='icon', type='image/png', sizes='192x192', href='/images/android-chrome-192x192.png')
+        link(rel='icon', type='image/png', sizes='16x16', href='/images/favicon-16x16.png')
+        link(rel='mask-icon', href='/images/safari-pinned-tab.svg', color='#5bd565')
+        link(rel='shortcut icon', href='/images/favicon.ico')
+    body
+        //- navbar
+        section.Section_Navbar
+            nav.text-white.text-center.back.navbar.fixed-top.navbar-expand-lg.navbar-light
+                .container
+                    p.d-block(style="width: 100%; font-size: 30px")= order.title
+                        span.float-left(style=" cursor: pointer;", onclick='window.history.back();')
+                            i.fa.fa-arrow-left        
+        .details
+            .container
+                // first row heading
+                .row.heading
+                    h2.h1= order.title
+                    p #{moment(order.createdAt).fromNow()}
+                // second row contain slider and information
+                .row
+                    // -information
+                    if language == 'en'
+                        .col.informtion
+                            if user
+                                if user._id == order.author
+                                    .dropdown.float-right
+                                        button.btn.btn-primary.dropdown-toggle(type='button', data-toggle='dropdown')
+                                            i.fa.fa-pencil.float-right
+                                        #drop_menu.dropdown-menu
+                                            button.btn-link.btn-block.prev_def(data-toggle='modal' data-target='#order_edit', style="padding-left: 4px;") Edit
+                                            a#delete.btn-link.btn-block(href='#', data-id=order._id) Delete
+                                
+                            ul
+                                li  
+                                    p.content= order.content
+                                li
+                                    h5 Price in mounth
+                                    h2.price= order.price
+                                li
+                                    h5 Place
+                                    h2.place= order.place
+                                li
+                                    if author
+                                        h5 By  #{author.name_en}
+                                        h2 phone: #{author.phone}
+
+                    else if language == 'ar'
+                        .col.informtion.text-right
+                            if user
+                                if user._id == order.author
+                                    .dropdown.float-left.text-left
+                                        button.btn.btn-primary.dropdown-toggle(type='button', data-toggle='dropdown')
+                                            i.fa.fa-pencil.float-right
+                                        #drop_menu.dropdown-menu.text-right
+                                            button.btn.btn-link(data-toggle='modal' data-target='#order_edit', style="padding-left: 4px;") تعديل
+                                            button#delete.btn.btn-link.btn-block(data-id=order._id) حذف
+                                    
+                                    
+                            ul
+                                li
+                                    p.content= order.content
+                                li
+                                    h5 الإيجار فى الشهر
+                                    h2.price= order.price
+                                li
+                                    h5 المكان
+                                    h2.place= order.place
+                                li
+                                    if author
+                                        h5 المالك:  #{author.name_ar}
+                                        h2 رقم الهاتف: #{author.phone}
+        
+                .row.users-action.mt-4
+                    .col.comments.col-xs-12.col-lg-6
+                        if language == 'en'
+                            form(action="/ordcomment", method="POST")
+                                .write-it
+                                    textarea#comment.form-control(name="comment", placeholder="e.g: Yes, I have your order, please contact me", style="resize: none; width: 100%")
+                                input(type="hidden", name="ordId", value=order._id)
+                                input.btn.btn-info(type="submit", value="Add comment")
+                        else if language == 'ar'
+                            form#adcomment.text-right(action="/ordcomment", method="POST")
+                                .write-it
+                                    textarea#comment.form-control(name="comment", placeholder="مثال: فى اى مكان ؟", style="resize: none; width: 100%")
+                                input(type="hidden", name="ordId", value=order._id)
+                                input.btn.btn-info(type="submit", value="أضافه")
+
+                each comment, i in order.comments
+                    div.comment(id=`comments${i}`)
+                        input#order_len(type="hidden", value=order.comments.length)
+                        .dropdown.float-right
+                            if user
+                                if user._id == comment.userId 
+                                    button.btn.btn-primary.dropdown-toggle(type='button')
+                                        i.fa.fa-pencil.float-right
+                                    if language == 'en'
+                                        .dropdown-menu.order_menu
+                                            a.btn.btn-link.btn-block.prev_def(href=`/ordcomment/${comment._id}`, data-id=comment._id, id=`delete_order_com${i}`) Delete
+                                            input#order_id(type="hidden", value=order._id)
+                                            
+                                    
+                                            button.btn.btn-link.btn-block(type='button' data-toggle='modal' data-target=`#com_edit${i}`) Edit
+                                    else if language == 'ar'
+                                        .dropdown-menu.text-right.order_menu
+                                            a.btn.btn-link.btn-block.prev_def(href=`#`, data-id=comment._id, id=`delete_order_com${i}`) حذف
+                                            input#order_id(type="hidden", value=order._id)
+                                    
+                                            button.btn.btn-link.btn-block(type='button' data-toggle='modal' data-target=`#com_edit${i}`) تعديل
+
+                        if user.pro_image
+                            img(src=user.pro_image, alt="thumbnails")
+                        else
+                            img(src="/images/person_profile.png", alt="", width='50px', height='50px')
+
+                        span(id=`order_comment${i}`, style='display: inline-block; margin-left: 20px')= comment.body
+
+                        if language == 'en'
+                            p.text-primary= comment.username_en
+                        else if language == 'ar'
+                            p.text-primary= comment.username_ar
+
+                            
+                    .modal.fade(id=`com_edit${i}`, tabindex='-1' role='dialog' aria-labelledby='com_editLabel' aria-hidden='true')
+                        .modal-dialog(role='document')
+                            .modal-content
+                                .modal-body
+                                    form(action=`/ordcomment/edit/${comment._id}`, method="POST")
+                                        .form-group
+                                            textarea.form-control(name=`comeditted`, cols="10", rows="2", style="resize: none; width: 40%")= comment.body
+                                            input(type="hidden", name="editId", value=order._id)
+                                            if language == 'en'
+                                                input.btn(type="submit")
+                                            else if language == 'ar'
+                                                input.btn(type="تعديل")
+        #order_edit.modal.fade(tabindex='-1' role='dialog' aria-labelledby='order_editLabel' aria-hidden='true')
+                    .modal-dialog(role='document')
+                        .modal-content
+                            .modal-header
+                                if language == 'en'
+                                    h5#order_editLabel.modal-title Edit
+                                else if language == 'ar'
+                                    h5#order_editLabel.modal-title تعديل
+                                button.close(type='button' data-dismiss='modal' aria-label='Close')
+                                span(aria-hidden='true') &times;
+                            .modal-body
+                                if language == 'en'
+                                    form#orde(data-id=order._id)
+                                        .form-group
+                                            label(for="title1") Title
+                                            input#title1.form-control(type="text", name="title", placeholder="e.g: Department in sabe3 district", value=order.title)
+                                        .form-group
+                                            label(for="content1") content
+                                            textarea#content1.form-control(name="content", cols="30", rows="4", placeholder="e.g: Department in sabe3 district at floor 4", style="resize: none", )= order.content
+                                        .form-group
+                                            label(for="price1") Price
+                                            input#price1.form-control(type="text", name="price", placeholder="e.g: 1200 L.E", value=order.price)
+                                        .form-group
+                                            label(for="place1") Place
+                                            input#place1.form-control(type="text", name="place", placeholder="e.g: Sabe3 district", value=order.place)
+                                        
+                                        .form-group
+                                            input.btn.btn-primary(type='submit', value="Save")
+                                else if language == 'ar'
+                                    form#orde.text-right(data-id=order._id)
+                                        .form-group
+                                            label(for="title1") عنوان الطلب
+                                            input#title1.form-control(type="text", name="title", placeholder="مثال: شقه فى الحى السادس", value=order.title)
+                                        .form-group
+                                            label(for="content1") وصف الطلب
+                                            textarea#content1.form-control(name="content", cols="30", rows="4", style="resize: none", )= order.content
+                                        .form-group
+                                            label(for="price1") السعر
+                                            input#price1.form-control(type="text", name="price", placeholder="e.g: 1200 L.E", value=order.price)
+                                        .form-group
+                                            label(for="place1") المكان
+                                            input#place1.form-control(type="text", name="place", placeholder="e.g: Sabe3 district", value=order.place)
+                                        .form-group
+                                            input.btn.btn-primary(type='submit', value="حفظ")
+                                            
+                            
+
+
+        script(src="/JS/jquery.min.js")
+        script(src="/JS/popper.min.js")
+        script(src="/JS/bootstrap.min.js")
+        script(src="/main.js", defer)

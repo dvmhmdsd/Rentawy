@@ -1,0 +1,27 @@
+extends layout
+block content
+    
+    .stats_page.text-center
+        .advertise.page
+            .container
+                if orders
+                    // start advertise show1 div
+                    .ad-late
+                        each order in orders
+                            .col-lg-4.co-sm-6.col-xs-1
+                                .ad-flat
+                                    img(src='/images/undraw_booking_33fn.png', alt="image for this order")
+                                    p= order.title
+                                    button
+                                        if language == 'en'
+                                            a(href=`/orders/${order._id}`) learn more
+                                        else if language == 'ar'
+                                            a(href=`/orders/${order._id}`) قراءة المزيد
+                        .clearfix
+                else
+                    if language == 'en'
+                        h1.text-center Here you'll find all of the orders added
+                    else if language == 'ar'
+                        h1.text-center هنا ستجد جميع الطلبات المضافه
+                    img.no-users-image(src="/images/1.png", alt="temporarily image")
+

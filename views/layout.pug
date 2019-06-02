@@ -1,0 +1,533 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(http-equiv="X-UA-Compatible", content="ie=edge")
+    meta(name="description" content="A service to let students rent flats near Al-azhar university.")
+    //- for pwa 
+    meta(name='apple-mobile-web-app-title', content='Rentawy')
+    meta(name='application-name', content='Rentawy')
+    meta(name="msapplication-TileColor", content="#00aba9")
+    meta(name="msapplication-config", content="/images/browserconfig.xml")
+    meta(name="theme-color", content="#01aaa0")
+    //- for facebook graph
+    meta(property='og:image', content='/images/og-image.jpg')
+    meta(property='og:image:height', content='1109')
+    meta(property='og:image:width', content='2118')
+    meta(property='og:description', content='A service to let students rent flats near Al-azhar university.')
+    meta(property='og:title', content='Rentawy')
+    meta(property='og:url', content='https://rentawy.herokuapp.com/')
+
+
+
+    title Rentawy
+    link(rel="manifest", href="/manifest.json")
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Roboto+Condensed')
+    link(rel="stylesheet", href="/css/bootstrap.min.css")
+    link(rel="stylesheet", href="/css/font-awesome.min.css")
+    link(rel="stylesheet", href="/css/style.css")
+    //- favicon and logo
+    link(rel="apple-touch-icon", sizes="180x180", href="/images/apple-touch-icon.png")
+    link(rel="icon", type="image/png", sizes="32x32", href="/images/favicon-32x32.png")
+    link(rel="icon", type="image/png", sizes="16x16", href="/images/favicon-16x16.png")
+    link(rel="mask-icon", href="/images/safari-pinned-tab.svg", color="#0a4957")
+    link(rel="shortcut icon", href="/images/favicon.ico")
+
+  body
+    //- the main navbar of the site
+    section.Section_Navbar
+      nav.navbar.fixed-top.navbar-expand-lg.navbar-light
+        .container
+          //- the logo
+          a.navbar-brand(href='/', role="banner")
+            img(src='/images/logo.png', 
+              alt='go to home', width="10%")
+          //- the toggler button in small screens
+          button.navbar-toggler(
+              type='button', 
+              data-toggle='collapse', 
+              data-target='#navbarSupportedContent', 
+              aria-controls='navbarSupportedContent', 
+              aria-expanded='false', 
+              aria-label='Toggle navigation')
+            span
+                i.fa.fa-bars
+
+          //- the rest of the content
+          #navbarSupportedContent.collapse.navbar-collapse
+            //- language button
+            ul.mr-auto
+                li.nav-item
+                    if language == 'ar'
+                        a.lang.nav-link(href="/languages/en") english
+                    else if language == 'en'
+                        a.lang.nav-link(href="/languages/ar") عربى
+
+            //- navbar items
+            ul.navbar-nav
+              if user
+                li.nav-item
+                    button(type='button' data-toggle='modal' data-target='#order')
+                        if language == 'en'
+                            a.prev_def.nav-link(href='#') post your request 
+                        if language == 'ar'
+                            a.prev_def.nav-link(href='#') أضف طلبك 
+              
+                li.nav-item
+                    //- the ad button which is a modal
+                    button(type='button' data-toggle='modal' data-target='#ad') 
+                        if language == 'en'
+                                a.prev_def.nav-link(href='#') post your advertising
+                        else if language == 'ar'
+                            a.prev_def.nav-link(href='#') أضف إعلانك
+
+                li.nav-item.dropdown
+                    a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                         if user.pro_image
+                            img(src=user.pro_image, alt="", width="40px", height="40px")
+                         else 
+                            img(src="/images/person_profile.png", alt="profile thumbnails", width="40px", height="40px", style="border-radius: 50%")
+                    .dropdown-menu(aria-labelledby='navbarDropdown')
+                        if language == 'en'
+                            a.dropdown-item(href=`/profile/${user.id}`) Profile
+                            a.dropdown-item(href='/users/logout') log out
+                        else if language == 'ar'
+                            a.dropdown-item(href=`/profile/${user.id}`) الحساب الشخصى
+                            a.dropdown-item(href='/users/logout') تسجيل الخروج
+
+                li.nav-item#installApp_firefox.install.d-none.d-lg-block
+                  button(type='button' data-toggle='modal' data-target='#install_firefox')
+                    if language == 'en'
+                        a.prev_def.nav-link(href='#', title="Install the app into your desktop") 
+                            i.fa.fa-download
+                    else if language == 'ar'
+                        a.prev_def.nav-link(href='#', title="إضافة الموقع الى سطح المكتب لسرعة الوصول") 
+                            i.fa.fa-download
+                li.nav-item.install
+                    button.add-button 
+                        if language == 'en'
+                            a.prev_def.nav-link(href='#', title="Install the app into your desktop") 
+                                i.fa.fa-download
+                        else if language == 'ar'
+                            a.prev_def.nav-link(href='#', title="إضافة الموقع الى سطح المكتب لسرعة الوصول") 
+                                i.fa.fa-download
+
+              else
+                li.nav-item
+                  button(type='button' data-toggle='modal' data-target='#log')
+                    if language == 'en'
+                        a.prev_def.nav-link(href='#') log in
+                    else if language == 'ar'
+                        a.prev_def.nav-link(href='#') تسجيل الدخول
+
+
+                li.nav-item
+                  button(type='button' data-toggle='modal' data-target='#register')
+                    if language == 'en'
+                        a.prev_def.nav-link(href='#') sign up
+                    else if language == 'ar'
+                        a.prev_def.nav-link(href='#') التسجيل
+                li.nav-item#installApp_firefox.install.d-none.d-lg-block
+                  button(type='button' data-toggle='modal' data-target='#install_firefox')
+                    if language == 'en'
+                        a.prev_def.nav-link(href='#', title="Install the app into your desktop") 
+                            i.fa.fa-download
+                    else if language == 'ar'
+                        a.prev_def.nav-link(href='#', title="إضافة الموقع الى سطح المكتب لسرعة الوصول") 
+                            i.fa.fa-download
+                
+                li.nav-item.install
+                    button.add-button
+                        if language == 'en'
+                            a.prev_def.nav-link(href='#', title="Install the app into your desktop") 
+                                i.fa.fa-download
+                        else if language == 'ar'
+                            a.prev_def.nav-link(href='#', title="إضافة الموقع الى سطح المكتب لسرعة الوصول") 
+                                i.fa.fa-download
+              li.nav-item
+                button(type='button' data-toggle='modal' data-target='#help')
+                    a.nav-link.prev_def(href="#")
+                        i.fa.fa-question
+                        
+    //- modals
+    //- "add your ad" modal
+    #ad.modal.fade(tabindex='-1' role='dialog' aria-labelledby='adLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    if language == 'en'
+                        h5#adLabel.modal-title Add your advertisement
+                    else if language == 'ar'
+                        h5#adLabel.modal-title أضف إعلانك
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    if language == 'en'
+                        form#adv(action="/ads/add", method="POST", encType="multipart/form-data")
+                            .form-group
+                                label(for="title") Title
+                                input#title.form-control(type="text", name="title", placeholder="e.g: Department in sabe3 district")
+                            .form-group
+                                label(for="description") Description
+                                textarea#description.form-control(name="description", cols="30", rows="4", placeholder="e.g: Department in sabe3 district at floor 4", style="resize: none")
+                            .form-group
+                                label(for="price") Price
+                                input#price.form-control(type="text", name="price", placeholder="e.g: 1200 L.E")
+                            .form-group
+                                label(for="place") Address
+                                input#place.form-control(type="text", name="place", placeholder="e.g: 6th district")
+                            .form-group
+                                label(for="ad_images")
+                                input#ad_images.form-control-file(type="file", name="ad_image", multiple)
+                            input.btn(type='submit', value="Post")
+                    else if language == 'ar'
+                        form#adv.text-right(action="/ads/add", method="POST", encType="multipart/form-data")
+                            .form-group
+                                label(for="title") عنوان الإعلان
+                                input#title.form-control(type="text", name="title", placeholder="مثال: شقه فى الحى السادس 3 افراد")
+                            .form-group
+                                label(for="description") وصف الإعلان
+                                textarea#description.form-control(name="description", cols="30", rows="4", placeholder="مثال: الشقه فى الحى السادس فى الدور الرابع 3 غرف....", style="resize: none")
+                            .form-group
+                                label(for="price") الإيجار للشهر
+                                input#price.form-control(type="text", name="price", placeholder="مثال: 1200 جنيه")
+                            .form-group
+                                label(for="place") المكان
+                                input#place.form-control(type="text", name="place", placeholder="الحى السادس")
+                            .form-group
+                                label(for="ad_images") أضف صورا لإعلانك
+                                input#ad_images.form-control-file(type="file", name="ad_image", multiple)
+                            input.btn(type='submit', value="إضافه")
+
+    //- "add your request" modal
+
+    #order.modal.fade(tabindex='-1' role='dialog' aria-labelledby='orderLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    if language == 'en'
+                        h5#orderLabel.modal-title Add your order
+                    else if language == 'ar'
+                        h5#orderLabel.modal-title أضف طلبك
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    if language == 'en'
+                        form#ord(action="/orders/add", method="POST")
+                            .form-group
+                                label(for="title1") Title
+                                input#title1.form-control(type="text", name="title", placeholder="e.g: Department in sabe3 district for rent")
+                            .form-group
+                                label(for="content") Content
+                                textarea#content.form-control(name="content", cols="30", rows="4", placeholder="e.g: Department near to university", style="resize: none")
+                            .form-group
+                                label(for="price1") Price
+                                input#price1.form-control(type="text", name="price", placeholder="e.g: 1200 L.E")
+                            .form-group
+                                label(for="place1") Place
+                                input#place1.form-control(type="text", name="place", placeholder="e.g: Sabe3 district")
+                            input.btn(type='submit', value="Post")
+                    
+                    else if language == 'ar'
+                        form#ord.text-right(action="/orders/add", method="POST")
+                            .form-group
+                                label(for="title1") عنوان طلبك
+                                input#title1.form-control(type="text", name="title", placeholder="مثال: شقه للإيجار فى الحى السادس")
+                            .form-group
+                                label(for="content") محتوى الطلب
+                                textarea#content.form-control(name="content", cols="30", rows="4", placeholder="الشقه قريبه من جامعة الأزهر و .....", style="resize: none")
+                            .form-group
+                                label(for="price1") الميزانيه المتاحة
+                                input#price1.form-control(type="text", name="price", placeholder="مثال: 1200 جنيه")
+                            .form-group
+                                label(for="place1") المكان
+                                input#place1.form-control(type="text", name="place", placeholder="مثال: الحى السادس")
+                            input.btn(type='submit', value="إضافه")
+
+
+    //- log in modal
+    #log.modal.fade(tabindex='-1' role='dialog' aria-labelledby='logLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    if language == 'en'
+                        h5#logLabel.modal-title Welcome again !
+                    else if langyage == 'ar'
+                        h5#logLabel.modal-title أهلا من جديد
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    if language == 'en'
+                        form#login(action="/users/login", method="POST", novalidate)
+                            .form-group
+                                label(for="email") Your Email
+                                input#email.form-control(type="email", name="email", placeholder="e.g: example@example.com")
+                            .form-group
+                                label(for="password") Your Password
+                                input#password.form-control(type="password", name="password")
+                            input.btn(type='submit', value="Log In")
+                            a.float-right.btn-link(href="/users/forgot") forgot password?
+                    else if language == 'ar'
+                        form#login.text-right(action="/users/login", method="POST", novalidate)
+                            .form-group
+                                label(for="email") أكتب إيميلك
+                                input#email.form-control(type="email", name="email", placeholder="مثال: example@example.com")
+                            .form-group
+                                label(for="password") الرقم السرى
+                                input#password.form-control(type="password", name="password")
+                            input.float-left.btn(type='submit', value="تسجيل الدخول")
+                            a.float-right.btn-link(href="/users/forgot") هل نسيت كلمة السر؟
+
+    //- sign up modal
+
+    #register.modal.fade(tabindex='-1' role='dialog' aria-labelledby='registerLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    if language == 'en'
+                        h5#registerLabel.modal-title Welcome to our world
+                    else if language == 'ar'
+                        h5#registerLabel.modal-title أهلا بك فى عالمنا
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    if language == 'en'
+                        form#reg(action="/users/register", method="POST", novalidate)
+                            .form-group
+                                label(for="name_ar") Your Name in Arabic
+                                input#name_ar.form-control(type="text", name="name_ar", placeholder="e.g: محمد عبدالله")
+                            .form-group
+                                label(for="name_en") Your Name in English
+                                input#name_en.form-control(type="text", name="name_en", placeholder="e.g: Mohamed Abdullah")
+                            .form-group
+                                label(for="job") Job
+                                select#job.form-control(name="job")
+                                    option(value="", selected) Select your job
+                                    option(value="student") Student
+                                    option(value="owner") Owner
+                                    option(value="worker") Worker
+                            .form-group.d-none#worker
+                                label(for="worker_job") Add your field
+                                select#worker_job.form-control(name="worker_job")
+                                    option(value="", selected) Select your job
+                                    option(value="electrican") Electrican
+                                    option(value="plumber") plumber
+                                    option(value="carpenter") carpenter
+                            .form-group
+                                label(for="phone") phone
+                                input#phone.form-control(type="text", name="phone", placeholder="e.g: 010232323434")
+                            .form-group
+                                label(for="place2") address
+                                input#place2.form-control(type="text", name="place", placeholder="e.g: 6th district")
+                            .form-group
+                                label(for="reg-email") Your Email
+                                input#reg-email.form-control(type="email", name="email", placeholder="e.g: Sabe3 district")
+                            .form-group
+                                label(for="reg-password") Your Password
+                                input#reg-password.form-control(type="password", name="password")
+                            .form-group
+                                label(for="password2") Confirm Your Password
+                                input#password2.form-control(type="password", name="confirm")
+                            p On sign up you agree for 
+                                a.btn-link(href="#", data-toggle='modal' data-target='#terms') Our Terms
+                            button.btn(type='submit') Post
+                    else if language == 'ar'
+                        form#reg(action="/users/register", method="POST", novalidate)
+                            .form-group
+                                label(for="name_ar") إسمك بالعربيه
+                                input#name_ar.form-control(type="text", name="name_ar", placeholder="e.g: محمد عبدالله")
+                            .form-group
+                                label(for="name_en") إسمك بالإنجليزيه
+                                input#name_en.form-control(type="text", name="name_en", placeholder="e.g: Mohamed Abdullah")
+                            .form-group
+                                label(for="job") الوظيفه
+                                select#job.form-control(name="job")
+                                    option(value="", selected) إختر وظيفه
+                                    option(value="student") طالب
+                                    option(value="owner") مالك
+                                    option(value="worker") عامل
+                            .form-group.d-none#worker
+                                label(for="worker_job") اختر مجال عملك
+                                select#worker_job.form-control(name="worker_job")
+                                    option(value="", selected) Select your job
+                                    option(value="electrican") كهربائى
+                                    option(value="plumber") سباك
+                                    option(value="carpenter") نجار
+                            .form-group
+                                label(for="phone") رقم الهاتف
+                                input#phone.form-control(type="text", name="phone", placeholder="مثال: 010232323434")
+                            .form-group
+                                label(for="place2") العنوان
+                                input#place2.form-control(type="text", name="place", placeholder="مثال: الحى السادس")
+                            .form-group
+                                label(for="reg-email") إيميلك
+                                input#reg-email.form-control(type="email", name="email", placeholder="مثال: example@example.com")
+                            .form-group
+                                label(for="reg-password") الرقم السرى
+                                input#reg-password.form-control(type="password", name="password")
+                            .form-group
+                                label(for="password2") تأكيد الرقم السرى
+                                input#password2.form-control(type="password", name="confirm")
+                            p.float-right بالتسجيل انت توافق على 
+                                a.btn-link(href="#", data-toggle='modal' data-target='#terms') الشروط والأحكام
+                            button.btn(type='submit') التسجيل
+
+
+    //- install instructions modal
+    #install_firefox.install_vid.modal.fade(tabindex='-1' role='dialog' aria-labelledby='installLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    if language == 'en'
+                        p Add the app to homescreen to open it from desktop instead of browser
+                        video#media-video(controls='', width='100%', height='100%', poster='/images/android-chrome-192x192.png')
+                            source(src='/Videos/install_firefox.mp4', type='video/mp4')
+                            source(src='/Videos/install_firefox.mp4', type='video/ogg')
+                            source(src='/Videos/install_firefox.mp4', type='video/webm')
+                            |                         This Browser Doesn't Support video
+                    else if language == 'ar'
+                        p Add the app to homescreen to open it from desktop instead of browser
+                        video#media-video(controls='', width='100%', height='100%', poster='/images/android-chrome-192x192.png')
+                            source(src='/Videos/install_firefox.mp4', type='video/mp4')
+                            source(src='/Videos/install_firefox.mp4', type='video/ogg')
+                            source(src='/Videos/install_firefox.mp4', type='video/webm')
+                            |                         This Browser Doesn't Support video
+
+    //- install instructions modal
+    #help.modal.fade(tabindex='-1' role='dialog' aria-labelledby='helpLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    if language == 'en'
+                        h5#helpLabel.modal-title To start adding Ads & orders:
+                    else if language == 'ar'
+                        h5#helpLabel.modal-title للبدايه فى إضافة أعلانات وطلبات:
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    if language == 'en'
+                        ol
+                            li Sign up
+                            li check your email and click on the link received in email to verify your account
+                            li Sign in
+                    else if language == 'ar'
+                        ol
+                            li قم بإنشاء حساب
+                            li افتح الايميل واضغط على اللينك المرفق بالايميل لتأكيد حسابك
+                            li قم بتسجيل الدخول
+
+    #terms.modal.fade(tabindex='-1' role='dialog' aria-labelledby='termsLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    if language == 'en'
+                        h5 Our Terms
+                    else if language == 'ar'
+                        h5 شروط الاستخدام
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    if language == 'en'
+                        p the main target of Rentawy is just link students directly with owners, so Rentawy is not responsible for any problems occurs outside this vision.
+                    else if language == 'ar'
+                        p الهدف الرئيسي من الموقع هو مجرد توصيل المالك بالطلبه المحتاجين سكن دون تدخل السماسره لذالك ننوه انه لا دخل لنا بأي تعامل لا مع الطالب ولا المالك واننا مجرد وسيط بين الطرفين لذالك نخلي مسؤليتنا من اي شيء يحدث او اي تعامل بين الطرفين ونرجو ان تحفظم السلامه كلا الطرفين ولا يحدث اي نوع من المشاكل مستقبلا 
+
+
+    != messages('message', locals)
+    block content
+
+
+    
+
+    footer.pt-4
+        .container
+            .row
+                if language == 'en'
+                    .col-sm-12.col-md-6.col-lg-3.info.foo
+                        img(src='/images/logo.png', title='rentawy logo', alt='this is our logo rentawy', width='220px')
+                    // this is our
+                    .col-sm-12.col-md-6.col-lg-3.categories.foo
+                        h3 Categories
+                        ul.pt-3
+                            li
+                                a(href='#', data-toggle='modal' data-target='#terms') Terms
+                            li
+                                a(href='/about') About us
+                    // -this is our social icons
+                    .col-sm-12.col-md-6.col-lg-3.touch-with-us.foo
+                        h3 Stay in touch with us
+                        ul
+                            li
+                                a(href='#')
+                                i.fa.fa-facebook
+                            li
+                                a(href='#')
+                                i.fa.fa-twitter
+                            li
+                                a(href='#')
+                                i.fa.fa-linkedin
+                    // -this is our contact form
+                    .col-sm-12.col-md-6.col-lg-3.contact.foo
+                        h3 Let's have a talk
+                        form.foo-form
+                            label(for="con_name")
+                                input#con_name(type='text', name='text', placeholder='Enter Your Name', required='')
+                            label(for="con_email")
+                                input#con_email(type='email', name='email', placeholder='Enter Your Email', required='')
+                            label(for="con_body")
+                                textarea#con_body(required='', placeholder='Write Something')
+                            input(type='submit', value='Contact Me')
+                    .clearfix
+                    .copyright
+                        p 2019 All copyrights are reserved
+                else if language == 'ar'
+                    
+                    // -this is our contact form
+                    .col-sm-12.col-md-6.col-lg-3.contact.foo
+                        h3 نريد سماع اقتراحاتك
+                        form.foo-form
+                            label(for="con_name")
+                                input#con_name(type='text', name='text', placeholder='Enter Your Name')
+                            label(for="con_email")
+                                input#con_email(type='email', name='email', placeholder='Enter Your Email', required='')
+                            label(for="con_body")
+                                textarea#con_body(required='', placeholder='Write Something')
+                            input(type='submit', value='إرسال')
+                    // -this is our social icons
+                    .col-sm-12.col-md-6.col-lg-3.touch-with-us.foo
+                        h3 تواصل معنا
+                        ul
+                            li
+                                a(href='#')
+                                i.fa.fa-facebook
+                            li
+                                a(href='#')
+                                i.fa.fa-twitter
+                            li
+                                a(href='#')
+                                i.fa.fa-linkedin
+                    // this is our
+                    .col-sm-12.col-md-6.col-lg-3.categories.foo
+                        h3 الاقسام
+                        ul.pt-3
+                            li
+                                a(href='#', data-toggle='modal' data-target='#help') الشروط والاحكام
+                            li
+                                a(href='/about') معلومات عنا
+                    .col-sm-12.col-md-6.col-lg-3.info.foo
+                        img(src='/images/logo.png', title='rentawy logo', alt='this is our logo rentawy', width='220px')
+                    .clearfix
+                    // 2019 All copyrights are reserved
+                    .copyright
+                        p جميع الحقوق محفوظه
+            
+
+    script(src="/JS/jquery.min.js")
+    script(src="/JS/popper.min.js")
+    script(src="/JS/bootstrap.min.js")
+    script(src="main.js", defer)
+    

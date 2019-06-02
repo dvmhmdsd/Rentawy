@@ -1,0 +1,10 @@
+extends layout
+block content
+
+    .stats_page    
+        .container
+            if language == 'en'
+                h1.text-center Here you'll find all of the retaurants which signed up
+            else if language == 'ar'
+                h1.text-center هنا ستجد جميع المطاعم الذين قامو بالتسجيل عندنا
+            img.no-users-image(src="/images/1.png", alt="temporarily image")

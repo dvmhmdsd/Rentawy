@@ -1,0 +1,72 @@
+extends layout
+block content
+
+    .stats_page    
+        .container
+            if users.length > 0
+                each user in users
+                    if user.worker_job == 'electrican'
+                        .Electrican.text-center
+                            h1 Electricans
+                            .single_worker
+                                //- image thumbnails
+                                if user.pro_image
+                                    img.img(src=user.pro_image)
+                                else
+                                    img.img(src='/images/person_profile.jpg')
+                                //- info
+                                if language == 'en'
+                                    h2.upper= user.name_en
+                                    p place: #{user.place}
+                                    h3 phone: #{user.phone}
+                                else if language == 'ar'
+                                    h2.upper= user.name_ar
+                                    p العنوان: #{user.place}
+                                    h3 رقم الهاتف: #{user.phone}
+
+
+                    else if user.worker_job == 'plumber'
+                        .plumber.text-center
+                            h1 plumbers
+                            .single_worker
+                                //- image thumbnails
+                                if user.pro_image
+                                    img.img(src=user.pro_image)
+                                else
+                                    img.img(src='/images/person_profile.jpg')
+                                //- info
+                                if language == 'en'
+                                    h2.upper= user.name_en
+                                    p place: #{user.place}
+                                    h3 phone: #{user.phone}
+                                else if language == 'ar'
+                                    h2.upper= user.name_ar
+                                    p العنوان: #{user.place}
+                                    h3 رقم الهاتف: #{user.phone}
+
+
+                    else if user.worker_job == 'carpenter'
+                        .carpenter.text-center
+                            h1 carpenters
+                            .single_worker
+                                //- image thumbnails
+                                if user.pro_image
+                                    img.img(src=user.pro_image)
+                                else
+                                    img.img(src='/images/person_profile.jpg')
+                                //- info
+                                if language == 'en'
+                                    h2.upper= user.name_en
+                                    p place: #{user.place}
+                                    h3 phone: #{user.phone}
+                                else if language == 'ar'
+                                    h2.upper= user.name_ar
+                                    p العنوان: #{user.place}
+                                    h3 رقم الهاتف: #{user.phone}
+
+            else
+                if language == 'en'
+                    h1.text-center Here you'll find all of the workers who signed up
+                else if language == 'ar'
+                    h1.text-center هنا ستجد جميع العمال الذين قامو بالتسجيل عندنا
+                img.no-users-image(src="/images/1.png", alt="temporarily image")

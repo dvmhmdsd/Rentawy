@@ -1,0 +1,146 @@
+extends layout
+
+block content
+    //- header of the website
+    header
+        .container
+            //- layer of dark transparent color
+            .overlay
+            .Header_Body
+                if language == 'en'
+                    h1 What are you looking for ?
+                else if language == 'ar'
+                    h1 بتدور على ايه ؟
+                //- to get the places in all the ads
+                - var arr = [];
+                form#search
+                    label(for="search_select")
+                    select#search_select.form-control(name="search")
+                        if language == 'en'
+                            option( selected) Choose a place
+                        else if language == 'ar'
+                            option( selected) هل تبحث عن مكان معين ؟
+                        each ad in ads
+                            - arr.push(ad.place);
+                        //- get the unique items in arr
+                        - var unique = arr.filter((item, i, arr) => arr.indexOf(item) === i);                        
+                        each item in unique
+                            option(value=item)= item
+
+                    input#searchBtn.btn.btn-primary(type="submit", value="Search", data-toggle='modal' data-target='#searchm')
+    //- search results modal
+    #searchm.modal.fade(tabindex='-1' role='dialog' aria-labelledby='searchLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                img(src="/images/loading.gif", alt="")
+
+
+
+    // Start Advertise Section
+    section#ad-ads.advertise.text-center
+        .container
+            // Start Advertise header
+            .ad-head
+                if language == 'en'
+                    h2
+                        | Latest Added 
+                        span Ads
+                else if language == 'ar'
+                    h2
+                        span الإعلانات 
+                        | المضافه مؤخرا 
+            //- the main header
+            //- Start Advertise Show Div
+            .ad-late
+                - for (var i = 0; i < 3; i++) {
+                -  var ad = ads[i]
+                        if ad
+                            .col-lg-4.co-sm-6.col-xs-1
+                                .ad-flat
+                                    //- Flat image
+                                    if ad.images.length > 0
+                                        if language == 'en'
+                                            img(src=ad.images[0], alt="an image for the flat", height="70%")
+                                        else if language == 'ar'
+                                            img(src=ad.images[0], alt="صورة للأعلان", height="70%")
+                                    else
+                                        img(src="/images/1.png", alt="fake image for the flat")
+                                    //- flat address
+                                    p= ad.title
+                                    // button to know more about flat
+                                    if language == 'en'
+                                        a(href=`/ads/${ad._id}`) See Details
+                                    else if language == 'ar'
+                                        a(href=`/ads/${ad._id}`) رؤية تفاصيل أكثر
+                - }
+            //- button to show all ads
+            button.ad-learn.text-center
+                if language == 'en'
+                    a(href='/ads') See More ?
+                else if language == 'ar'
+                    a(href='/ads') رؤية المزيد ؟
+
+
+    //- requests section
+    section.Requestes_Section.text-center.background
+        .container
+            .Section_Top
+                .Page_Requestes
+                    if language == 'en'
+                        h2 requests
+                        a(href='/orders') See More ?
+                    else if language == 'ar'
+                        h2 الطلبات
+                        a(href='/orders') رؤية المزيد ؟
+            .row.card-cont
+                - for (var i = 0; i < 3; ++i) {
+                    -  var order = orders[i]
+                    if order
+                        .col-lg-4.co-sm-6.col-xs-1
+                            .card-item
+                                .img-item
+                                .overlay_Card.overlay
+                                .card-body
+                                    p= order.title
+                                    .card-link
+                                        if language == 'en'
+                                            a(href=`/orders/${order._id}`) See Details
+                                        else if language == 'ar'
+                                            a(href=`/orders/${order._id}`) رؤية تفاصيل أكثر
+                - }
+                .clearfix
+    //- services section
+    section.our-services.text-center
+        .container
+            h1 Our Services
+            .row.text-center
+                .col-lg-4.co-sm-6.col-xs-1
+                    figure.snip1519
+                        figcaption
+                            i.fa.fa-cutlery
+                            if language == 'en'
+                                h3 Restaurant
+                                a.button(href='/food') Show
+                            else if language == 'ar'
+                                h3 المطاعم
+                                a.button(href='/food') عرض
+                .col-lg-4.co-sm-6.col-xs-1
+                    figure.snip1519
+                        figcaption
+                            i.fa.fa-medkit
+                            if language == 'en'
+                                h3 Pharmacies
+                                a.button(href='/pharma') Show
+                            else if language == 'ar'
+                                h3 الصيدليات
+                                a.button(href='/pharma') عرض
+                .col-lg-4.co-sm-6.col-xs-1
+                    figure.snip1519
+                        figcaption
+                            i.fa.fa-cog
+                            if language == 'en'
+                                h3 Workers
+                                a.button(href='/workers') Show
+                            else if language == 'ar'
+                                h3 العمال
+                                a.button(href='/workers') عرض

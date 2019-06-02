@@ -1,0 +1,33 @@
+extends layout
+block content
+    
+    .stats_page.text-center
+        .advertise.page
+            .container
+                if ads
+                    // start advertise show1 div
+                    .ad-late
+                        each ad in ads                
+                            .col-lg-4.co-sm-6.col-xs-1
+                                .ad-flat
+                                    if ad.images.length > 0
+                                        if language == 'en'
+                                            img(src=ad.images[0], alt="an image for the flat", height="70%")
+                                        else if language == 'ar'
+                                            img(src=ad.images[0], alt="صورة للأعلان", height="70%")
+                                    else
+                                        img(src="/images/1.png", alt="fake image for the flat")
+                                    p= ad.title
+                                    button
+                                        if language == 'en'
+                                            a(href=`/ads/${ad._id}`) learn more
+                                        else if language == 'ar'
+                                            a(href=`/ads/${ad._id}`) قراءة المزيد
+                        .clearfix
+                else
+                    if language == 'en'
+                        h1.text-center Here you'll find all of the Advertisements added
+                    else if language == 'ar'
+                        h1.text-center هنا ستجد جميع الأعلانات المضافه
+                    img.no-users-image(src="/images/1.png", alt="temporarily image")
+

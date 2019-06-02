@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    .container
+        .page(style="padding: 40px")
+            form(method="POST", action="/users/forgot")
+                legend Forgot password
+                .form-group
+                    label Write the recovery email
+                    input.form-control(type="text", name="email", placeholder="e.g: example@example.com", autofocus)
+
+                input.btn.btn-primary(type="submit", value="Send recovery email")

@@ -1,0 +1,140 @@
+doctype html
+html
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        if language == 'en'
+            title= user.name_en
+        else if language == 'ar'
+            title= user.name_ar
+        link(rel="manifest", href="/manifest.json")
+        link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Roboto+Condensed')
+        link(rel="stylesheet", href="/css/bootstrap.min.css")
+        link(rel="stylesheet", href="/css/font-awesome.min.css")
+        link(rel="stylesheet", href="/css/style.css")
+        //- favicon and logo
+        link(rel='apple-touch-icon', sizes='180x180', href='/images/apple-touch-icon.png')
+        link(rel='icon', type='image/png', sizes='32x32', href='/images/favicon-32x32.png')
+        link(rel='icon', type='image/png', sizes='192x192', href='/images/android-chrome-192x192.png')
+        link(rel='icon', type='image/png', sizes='16x16', href='/images/favicon-16x16.png')
+        link(rel='mask-icon', href='/images/safari-pinned-tab.svg', color='#5bd565')
+        link(rel='shortcut icon', href='/images/favicon.ico')
+    body
+        //- navbar
+        section.Section_Navbar
+            nav.text-white.text-center.back.navbar.fixed-top.navbar-expand-lg.navbar-light
+                .container
+                    p.d-block(style="width: 100%; font-size: 30px")
+                        span.float-left(style=" cursor: pointer;", onclick='window.history.back();')
+                            i.fa.fa-arrow-left 
+        main.profile_container
+            section.profile
+                //- edit dropdown
+                .dropdown.float-right
+                    button.dropdown-toggle(type='button', data-toggle='dropdown')
+                        i.fa.fa-pencil.float-right
+                    if user
+                        .dropdown-menu.text-center
+                            a.btn-link.btn-block.prev_def(href='#', data-toggle='modal' data-target='#profile_edit') Edit
+                .profile-header
+                    if user.pro_image
+                        img#img(src=user.pro_image, alt="user thumbnails")
+                    else
+                        img#img(src='/images/pngtree-vector-cartoon-construction-worker-repairman-hd-clips-png-clipart_1541204.jpg', alt='temporarily image')
+                    if language == 'en'
+                        h1= user.name_en
+                    else if language == 'ar'
+                        h1= user.name_ar
+
+                .profile-content.text-left
+                    p   
+                        i.fa.fa-envelope
+                        | #{user.email}
+
+                    
+                    p
+                        i.fa.fa-briefcase
+                        span #{user.job}
+                    
+                    if user.worker_job !== ' '
+                        p
+                            i.fa.fa-tools
+                            span #{user.worker_job}
+                    p   
+                        i.fa.fa-phone
+                        | #{user.phone}
+                    p   
+                        i.fa.fa-map-marker
+                        | #{user.place}
+            section.posts
+                .container
+
+                    article
+                        if ad.length > 0
+                            h2 Advertisements
+                            
+                            each item in ad
+                                .card(style='width: 18rem;')
+                                    .card-body
+                                        h5.card-title= item.title
+                                        p.card-text= moment(item.createdAt).fromNow()
+                                        if language == 'en'
+                                            a.btn(href=`/ads/${item._id}`) Read more
+                                        else if language == 'ar'
+                                            a.btn(href=`/ads/${item._id}`) قؤاءة المزيد
+                    article
+                        if order.length > 0
+                            h2 Orders
+                            each item in order
+                                .card(style='width: 18rem;')
+                                    .card-body
+                                        h5.card-title= item.title
+                                        p.card-text= moment(item.createdAt).fromNow()
+                                        if language == 'en'
+                                            a.btn(href=`/ads/${item._id}`) Read more
+                                        else if language == 'ar'
+                                            a.btn(href=`/ads/${item._id}`) قؤاءة المزيد
+
+                
+        #profile_edit.modal.fade(tabindex='-1' role='dialog' aria-labelledby='proLabel' aria-hidden='true')
+            .modal-dialog(role='document')
+                .modal-content
+                    .modal-header
+                        h5#proLabel.modal-title Edit Your profile
+                        button.close(type='button' data-dismiss='modal' aria-label='Close')
+                        span(aria-hidden='true') &times;
+                    .modal-body
+                        form#adv(action=`/profile/${user._id}`, method="POST", encType="multipart/form-data")
+                            .form-group
+                                label(for="name_ar") Your Name in Arabic
+                                input#name_ar.form-control(type="text", name="name_ar", placeholder="e.g: محمد عبدالله", value=user.name_ar)
+                            .form-group
+                                label(for="name_en") Your Name in English
+                                input#name_en.form-control(type="text", name="name_en", placeholder="e.g: Mohamed Abdullah", value=user.name_en)
+                            .form-group
+                                label(for="job") Job
+                                input#job.form-control(type="text", name="job", placeholder="e.g: Plumber", value=user.job)
+                            .form-group
+                                    label(for="phone") phone
+                                    input#phone.form-control(type="text", name="phone", placeholder="e.g: 010232323434", value=user.phone)
+                            .form-group
+                                label(for="place") address
+                                input#place.form-control(type="text", name="place", placeholder="e.g: 6th district", value=user.place)
+                            .form-group
+                                label(for="pro_thumbnails")
+                                input#pro_thumbnails.form-control-file(type="file", name="pro_image")
+                            input.btn.btn-primary(type='submit', value="Save")
+
+
+        script(src="/JS/jquery.min.js")
+        script(src="/JS/popper.min.js")
+        script(src="/JS/bootstrap.min.js")
+        script.
+            document.querySelector('section.profile').style.height = window.innerHeight + 'px';
+            document.querySelector("section.posts").style.marginLeft = document.querySelector("section.profile").offsetWidth + 10 + "px";
+            if ($(window).width() <= 800) {
+                document.querySelector("section.profile").style.position = 'relative';
+                document.querySelector("section.posts").style.marginLeft = '0';
+            }
+             

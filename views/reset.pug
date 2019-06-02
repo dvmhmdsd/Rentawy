@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    .container
+        .page(style="padding: 40px")
+            form(method="POST")
+                legend Reset password
+                .form-group
+                    label(for="newpass") New password
+                    input#newpass.form-control(type="password", name="password", autofocus)
+                .form-group
+                    label(for="confirm") Confirm password
+                    input#confirm.form-control(type="password", name="confirm")
+                input.btn.btn-primary(type="submit", value="Reset")

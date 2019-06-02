@@ -1,0 +1,222 @@
+doctype html
+html
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title= ad.title
+        link(rel="manifest", href="/manifest.json")
+        link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Roboto+Condensed')
+        link(rel="stylesheet", href="/css/bootstrap.min.css")
+        link(rel="stylesheet", href="/css/font-awesome.min.css")
+        link(rel="stylesheet", href="/css/style.css")
+        //- favicon and logo
+        link(rel='apple-touch-icon', sizes='180x180', href='/images/apple-touch-icon.png')
+        link(rel='icon', type='image/png', sizes='32x32', href='/images/favicon-32x32.png')
+        link(rel='icon', type='image/png', sizes='192x192', href='/images/android-chrome-192x192.png')
+        link(rel='icon', type='image/png', sizes='16x16', href='/images/favicon-16x16.png')
+        link(rel='mask-icon', href='/images/safari-pinned-tab.svg', color='#5bd565')
+        link(rel='shortcut icon', href='/images/favicon.ico')
+    body
+        //- navbar
+        section.Section_Navbar
+            nav.text-white.text-center.back.navbar.fixed-top.navbar-expand-lg.navbar-light
+                .container
+                    p.d-block(style="width: 100%; font-size: 30px")= ad.title
+                        span.float-left(style=" cursor: pointer;", onclick='window.history.back();')
+                            i.fa.fa-arrow-left
+
+
+        .details
+            .container
+                // first row heading
+                .row.heading
+                    h2.h1= ad.title
+                    p #{moment(ad.createdAt).fromNow()}
+                // second row contain slider and information
+                .row
+                    // slider
+                    .col-xs-12.col-lg-6.slider
+                        #carouselExampleControls.carousel.slide(data-ride='carousel')
+                            .carousel-inner
+                                each image, i in ad.images
+                                    .carousel-item
+                                        img.d-block.w-100(src=image, alt='an image to view the flat', title='aside home', style="width: 600px; height: 600px")
+
+                            a.carousel-control-prev(href='#carouselExampleControls', role='button', data-slide='prev')
+                                span.carousel-control-prev-icon(aria-hidden='true')
+                                span.sr-only Previous
+                            a.carousel-control-next(href='#carouselExampleControls', role='button', data-slide='next')
+                                span.carousel-control-next-icon(aria-hidden='true')
+                                span.sr-only Next
+
+                    // -information
+                    if language == 'en'
+                        .col.informtion.col-xs-12.col-lg-6
+                            if user
+                                if user._id == ad.author
+                                    .dropdown.float-right
+                                        button.btn.dropdown-toggle(type='button')
+                                            i.fa.fa-pencil.float-right
+                                        #drop_menu.dropdown-menu
+                                            a.btn-link.btn-block.prev_def#modal-fade(href='#', data-toggle='modal' data-target='#ad_edit', style="padding-left: 4px;") Edit
+                                            a#delete_ad.btn-link.btn-block(href='#', data-id=ad._id) Delete
+                                    
+                            ul
+                                li     
+                                    p= ad.description
+                                li
+                                    h5 Price in mounth
+                                    h2= ad.price
+                                li
+                                    h5 Place
+                                    h2= ad.place
+                                if author
+                                    li
+                                        h5 By  #{author.name_en}, 
+                                        h2 phone: #{author.phone}
+
+                    else if language == 'ar'
+                        .col.informtion.col-xs-12.col-lg-6.text-right
+                            if user
+                                if user._id == ad.author
+                                    .dropdown.float-left
+                                        button.btn.dropdown-toggle(type='button', data-toggle='dropdown')
+                                            i.fa.fa-pencil.float-right
+                                        #drop_menu.dropdown-menu.text-right
+                                            a.btn-link.btn-block.prev_def#modal-fade(href='#', data-toggle='modal' data-target='#ad_edit', style="padding-left: 4px;") تعديل
+                                            a#delete_ad.btn-link.btn-block(href='#', data-id=ad._id) حذف
+                                    
+                                    
+                            ul
+                                li
+                                    p= ad.description
+                                li
+                                    h5 الإيجار فى الشهر
+                                    h2= ad.price
+                                li
+                                    h5 المكان
+                                    h2= ad.place
+                                if author
+                                    li
+                                        h5 المالك:  #{author.name_ar}, 
+                                        h2 رقم الهاتف: #{author.phone}
+        
+                    
+                                
+
+                .row.users-action.mt-4
+                    .col.comments.col-xs-12.col-lg-6
+                        if language == 'en'
+                            form(action="/adcomment", method="POST")
+                                .write-it
+                                    textarea#comment.form-control(name="comment", placeholder="e.g: Yes, I have your order, please contact me", style="resize: none; width: 100%")
+                                input(type="hidden", name="adId", value=ad._id)
+                                input.btn.btn-info(type="submit", value="Add comment")
+                        else if language == 'ar'
+                            form#adcomment.text-right(action="/adcomment", method="POST")
+                                .write-it
+                                    textarea#comment.form-control(name="comment", placeholder="مثال: فى اى مكان ؟", style="resize: none; width: 100%")
+                                input(type="hidden", name="adId", value=ad._id)
+                                input.btn.btn-info(type="submit", value="أضافه")
+
+                each comment, i in ad.comments
+                    div.comment(id=`comments${i}`)
+                        input#len(type="hidden", value=ad.comments.length)
+                        .dropdown.float-right
+                            if user
+                                if user._id == comment.userId    
+                                    button.btn.btn-primary.dropdown-toggle(type='button')
+                                        i.fa.fa-pencil.float-right
+                                    if language == 'en'
+                                        .dropdown-menu.ad_menu
+                                            a.btn.btn-link.btn-block.prev_def(href=`/adcomment/${comment._id}`, data-id=comment._id, id=`delete_ad_com${i}`) Delete
+                                            input#ad_id(type="hidden", value=ad._id)
+                                    
+                                            button.btn.btn-link.btn-block(type='button' data-toggle='modal' data-target=`#com_edit${i}`) Edit
+                                    else if language == 'ar'
+                                        .dropdown-menu.text-right.ad_menu
+                                            a.btn.btn-link.btn-block.prev_def(href=`#`, data-id=comment._id, id=`delete_ad_com${i}`) حذف
+                                            input#ad_id(type="hidden", value=ad._id)
+                                    
+                                            button.btn.btn-link.btn-block(type='button' data-toggle='modal' data-target=`#com_edit${i}`) تعديل
+
+                        if user.pro_image
+                            img(src=user.pro_image, alt="thumbnails")
+                        else
+                            img(src="/images/person_profile.png", alt="", width='50px', height='50px')
+
+                        span(id=`ad_comment${i}`, style='display: inline-block; margin-left: 20px')= comment.body
+
+                        if language == 'en'
+                            p.text-primary= comment.username_en
+                        else if language == 'ar'
+                            p.text-primary= comment.username_ar
+
+                            
+                    .modal.fade(id=`com_edit${i}`, tabindex='-1' role='dialog' aria-labelledby='com_editLabel' aria-hidden='true')
+                        .modal-dialog(role='document')
+                            .modal-content
+                                .modal-body
+                                    form(action=`/adcomment/edit/${comment._id}`, method="POST")
+                                        .form-group
+                                            textarea.form-control(name=`comeditted`, cols="10", rows="2", style="resize: none; width: 40%")= comment.body
+                                            input(type="hidden", name="editId", value=ad._id)
+                                            if language == 'en'
+                                                input.btn.btn-primary(type="submit")
+                                            else if language == 'ar'
+                                                input.btn.btn-primary(type="تعديل")
+
+    #ad_edit.modal.fade(tabindex='-1' role='dialog' aria-labelledby='ad_editLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    if language == 'en'
+                        h5#ad_editLabel.modal-title Edit
+                    else if language == 'ar'
+                        h5#ad_editLabel.modal-title تعديل
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    if language == 'en'
+                        form#adver(method='POST', action=`/ads/edit/${ad._id}`, encType="multipart/form-data")
+                            .form-group
+                                label(for="title") Title
+                                input#title.form-control(type="text", name="title", placeholder="e.g: Department in sabe3 district", value=ad.title)
+                            .form-group
+                                label(for="description") Description
+                                textarea#description.form-control(name="description", cols="30", rows="4", placeholder="e.g: Department in sabe3 district at floor 4", style="resize: none", )= ad.description
+                            .form-group
+                                label(for="price") Price
+                                input#price.form-control(type="text", name="price", placeholder="e.g: 1200 L.E", value=ad.price)
+                            .form-group
+                                label(for="place") Place
+                                input#place.form-control(type="text", name="place", placeholder="e.g: Sabe3 district", value=ad.place)
+                            .form-group
+                                label(for="ad_img")
+                                input#ad_img.form-control-file(type="file", name="ad_image", multiple)
+                            .form-group
+                                input.btn.btn-primary(type='submit', value="Save")
+                    else if language == 'ar'
+                        form#adver.text-right(method='POST', action=`/ads/edit/${ad._id}`, encType="multipart/form-data")
+                            .form-group
+                                label(for="title") عنوان الإعلان
+                                input#title.form-control(type="text", name="title", placeholder="مثال: شقه فى الحى السادس", value=ad.title)
+                            .form-group
+                                label(for="description") وصف الإعلان
+                                textarea#description.form-control(name="description", cols="30", rows="4", style="resize: none", )= ad.description
+                            .form-group
+                                label(for="price") السعر
+                                input#price.form-control(type="text", name="price", placeholder="e.g: 1200 L.E", value=ad.price)
+                            .form-group
+                                label(for="place") المكان
+                                input#place.form-control(type="text", name="place", placeholder="e.g: Sabe3 district", value=ad.place)
+                            .form-group
+                            label(for="ad_img")
+                                input#ad_img.form-control-file(type="file", name="ad_image", multiple)
+                            .form-group
+                                input.btn.btn-primary(type='submit', value="حفظ")
+        script(src="/JS/jquery.min.js")
+        script(src="/JS/popper.min.js")
+        script(src="/JS/bootstrap.min.js")
+        script(src="main.js", defer)
