@@ -37,12 +37,8 @@ $(function() {
     navbar.classList.add("back");
   }
   window.addEventListener("scroll", () => {
-    let navLink = document.querySelectorAll('.Section_Navbar nav ul.navbar-nav .nav-item button a.nav-link');
     if (window.pageYOffset >= 100 && !navbar.classList.contains("back")) {
       navbar.classList.add("back");
-      navLink.forEach(link => {
-        link.style.color = '#fff';
-      })
     } else if (
       window.pageYOffset < 100 &&
       !(
@@ -55,9 +51,6 @@ $(function() {
       )
     ) {
       navbar.classList.remove("back");
-      navLink.forEach(link => {
-        link.style.color = '#0a4957';
-      })
     }
   });
 
