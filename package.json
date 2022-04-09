@@ -29,7 +29,7 @@
     "gulp-autoprefixer": "^6.0.0",
     "gulp-csso": "^3.0.1",
     "gulp-imagemin": "^5.0.3",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "mongoose": "^5.4.20",
     "multer": "^1.4.1",
     "multer-storage-cloudinary": "^2.2.1",
