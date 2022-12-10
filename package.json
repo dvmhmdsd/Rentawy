@@ -19,7 +19,7 @@
     "connect-flash": "^0.1.1",
     "connect-flash-plus": "^0.2.1",
     "cookie-parser": "^1.4.4",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-flash": "0.0.2",
     "express-messages": "^1.0.1",
     "express-request-language": "^1.1.15",
